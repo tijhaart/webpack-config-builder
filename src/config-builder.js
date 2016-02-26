@@ -13,7 +13,8 @@ export default function createConfig(c$, defaults={}) {
     set,
     asObservable,
     merge,
-    toJs
+    toJs,
+    plugin,
   };
 
   function use(configurator) {
@@ -58,6 +59,42 @@ export default function createConfig(c$, defaults={}) {
   function toJs() {
     c$.map(x => x.toJS()).do(updateVal).subscribe();
     return val;
+  }
+
+  /**
+   * Pass self to plugin function the allow further chaining without storing references.
+   * @param {Function} pluginFn
+   * @example
+     ```
+     const configX = createConfig(null, {
+       debug: true,
+       output: {
+         filename: 'main.js'
+       }
+     })
+     .plugin(myPlugin);
+
+     function myPlugin(config) {
+       return config
+         .use(c$ => {
+           return c$.map(changeOutputFilename)
+         })
+       ;
+
+       function changeOutputFilename(c) {
+         if (c.get('debug')) {
+           return c.updateIn(['output', 'filename'], (filename) => {
+             return filename.replace('.js', '.min.js');
+           });
+         }
+         return c;
+       }
+     }
+     ```
+   * @returns {(Object|*)} Plugin decides what to return
+   */
+  function plugin(pluginFn) {
+    return pluginFn(this);
   }
 
   // local
