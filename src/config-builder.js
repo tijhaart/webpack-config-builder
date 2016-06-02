@@ -15,7 +15,6 @@ export default function createConfig(c$, defaults={}) {
     merge,
     toJs,
     plugin,
-    map,
   };
 
   function use(configurator) {
