@@ -28,8 +28,7 @@ function createConfig(c$) {
     asObservable: asObservable,
     merge: merge,
     toJs: toJs,
-    plugin: plugin,
-    map: map
+    plugin: plugin
   };
 
   function use(configurator) {
