@@ -15,6 +15,7 @@ export default function createConfig(c$, defaults={}) {
     merge,
     toJs,
     plugin,
+    map,
   };
 
   function use(configurator) {
@@ -40,7 +41,17 @@ export default function createConfig(c$, defaults={}) {
     return this.use(c$ => c$);
   }
 
+  /**
+   * Set
+   * @param {String|Function} key
+   * @param {*} val
+   * @returns {Config}
+   */
   function set(key, val) {
+    if (typeof key === 'function') {
+      return this.use($c => c$.map(key));
+    }
+
     return this.use(c$ => c$.map(c => c.setIn([key], val)));
   }
 
