@@ -1,14 +1,15 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+exports.exportToWebpackConfig = undefined;
 
 var _config = require('./config');
 
 var _config2 = _interopRequireDefault(_config);
 
-exports['default'] = _config2['default'];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _config2.default;
 exports.exportToWebpackConfig = _config.exportToWebpackConfig;

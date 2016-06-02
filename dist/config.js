@@ -1,10 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+exports.exportToWebpackConfig = undefined;
 
 var _configBuilder = require('./config-builder');
 
@@ -18,15 +17,18 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _pluginsExportWebpackConfig = require('./plugins/export-webpack-config');
+var _exportWebpackConfig = require('./plugins/export-webpack-config');
 
-var _pluginsExportWebpackConfig2 = _interopRequireDefault(_pluginsExportWebpackConfig);
+var _exportWebpackConfig2 = _interopRequireDefault(_exportWebpackConfig);
 
-exports['default'] = webpackConfig;
-exports.exportToWebpackConfig = _pluginsExportWebpackConfig2['default'];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = webpackConfig;
+exports.exportToWebpackConfig = _exportWebpackConfig2.default;
+
 
 function webpackConfig(options) {
-  return (0, _configBuilder2['default'])(null, _lodash2['default'].defaults(options, {
+  return (0, _configBuilder2.default)(null, _lodash2.default.defaults(options, {
     entry: './src/app.js',
     // Keep the config object more linear
     'module.loaders': {},

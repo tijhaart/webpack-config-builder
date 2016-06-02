@@ -1,11 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports['default'] = createConfig;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+exports.default = createConfig;
 
 var _immutable = require('immutable');
 
@@ -15,10 +13,12 @@ var _rx = require('rx');
 
 var _rx2 = _interopRequireDefault(_rx);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function createConfig(c$) {
   var defaults = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-  c$ = c$ || new _rx2['default'].BehaviorSubject(_immutable2['default'].fromJS(defaults));
+  c$ = c$ || new _rx2.default.BehaviorSubject(_immutable2.default.fromJS(defaults));
   var val = null;
 
   return {
@@ -28,7 +28,8 @@ function createConfig(c$) {
     asObservable: asObservable,
     merge: merge,
     toJs: toJs,
-    plugin: plugin
+    plugin: plugin,
+    map: map
   };
 
   function use(configurator) {
@@ -54,7 +55,19 @@ function createConfig(c$) {
     });
   }
 
+  /**
+   * Set
+   * @param {String|Function} key
+   * @param {*} val
+   * @returns {Config}
+   */
   function set(key, val) {
+    if (typeof key === 'function') {
+      return this.use(function ($c) {
+        return c$.map(key);
+      });
+    }
+
     return this.use(function (c$) {
       return c$.map(function (c) {
         return c.setIn([key], val);
@@ -79,7 +92,7 @@ function createConfig(c$) {
   function toJs() {
     c$.map(function (x) {
       return x.toJS();
-    })['do'](updateVal).subscribe();
+    }).do(updateVal).subscribe();
     return val;
   }
 
@@ -124,10 +137,8 @@ function createConfig(c$) {
   }
 
   function notifyOnEmptyReturnValue(c$, configurator) {
-    return c$['do'](function (x) {
+    return c$.do(function (x) {
       return console.warn('Configurator: %o did not yield any output', configurator);
     });
   }
 }
-
-module.exports = exports['default'];
