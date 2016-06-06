@@ -14,6 +14,7 @@ let cfg = Config({
     main: './index.js',
   },
   output: {
+    libraryTarget: 'commonjs2',
     path: './lib',
     filename: `${pkg.name}.js`
   },
