@@ -17,16 +17,9 @@ let cfg = Config({
     path: './lib',
     filename: `${pkg.name}.js`
   },
-  resolve: {
-    root: void(0),
-    modulesDirectories: {
-      'default': __dirname + '/node_modules'
-    }
-  },
   module: {
     loaders: {}
-  },
-  plugins: {},
+  }
 })
 .useIf(['env', 'production'], c => c.set('devtool', void(0)))
 .useIf(['env', 'production'], c => c.set('debug', false).set('watch', false))
