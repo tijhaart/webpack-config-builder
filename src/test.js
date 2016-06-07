@@ -59,3 +59,46 @@ test('exportForWebpack', t => {
 
   t.end();
 });
+
+test('compose', t => {
+  t.plan(2);
+  const a = Config({
+    env: { production: true },
+    output: {
+      filename: '[name].[ext]'
+    }
+  });
+
+  const b = Config({ progress: true }).useIf(
+    ['env', 'production'],
+    c => c.setIn(['output', 'filename'], '[name].min.[ext]?[hash]')
+  );
+
+  let c = a.compose(b);
+
+  t.deepEqual(
+    c.toJs(),
+    {
+      env: { production: true },
+      output: {
+        filename: '[name].min.[ext]?[hash]'
+      },
+      progress: true
+    },
+    'should have composed a and b'
+  );
+
+  c = b.compose(a);
+
+  t.deepEqual(
+    c.toJs(),
+    {
+      env: { production: true },
+      output: {
+        filename: '[name].min.[ext]?[hash]'
+      },
+      progress: true
+    },
+    'should have compose b and a'
+  );
+});

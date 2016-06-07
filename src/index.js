@@ -18,8 +18,21 @@ export default function Config(state, reducers = defaultReducers) {
   return {
     use: use,
     useIf: useIf,
-    toJs: toJs
+    toJs: toJs,
+    compose: compose,
+    getReducers: () => reducers,
+    getState: () => state,
   };
+
+  /**
+   * @param {Config} config
+   */
+  function compose(config) {
+    return Config(
+      config.getState().mergeDeep(state),
+      reducers.concat(config.getReducers())
+    );
+  }
 
   /**
    * toJs
