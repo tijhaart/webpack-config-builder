@@ -13,7 +13,7 @@ const defaultReducers = [c => c];
  * @param {Function[]} reducers
  */
 export default function Config(state, reducers = defaultReducers) {
-  state = Map.isMap(state) ? state : fromJS(state);
+  state = Map.isMap(state) ? state : fromJS(state || {});
 
   return {
     use: use,
