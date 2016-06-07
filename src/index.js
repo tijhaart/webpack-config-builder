@@ -76,5 +76,5 @@ export function exportForWebpack(c) {
 }
 
 function objectToArray(obj) {
-  return obj ? obj.toArray(): [];
+  return obj ? obj.toArray(): void(0);
 }
