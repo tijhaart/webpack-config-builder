@@ -102,3 +102,100 @@ test('compose', t => {
     'should have compose b and a'
   );
 });
+
+test('plugin with prototype', t => {
+  t.plan(1);
+
+  function ModuleXPlugin(options) {
+    this.options = options;
+  }
+
+  ModuleXPlugin.prototype.apply = function call(config) {
+    const { options } = this;
+
+    const addLoader = c => c.setIn(['module', 'loaders', 'moduleX'], {
+      test: /\.scss$/,
+      includes: '/path/to/module-x',
+      loaders: ['sass?config=moduleXSass']
+    });
+
+    const setSassConfig = c => c.set('moduleXSass', {
+      data: `@import "${options.themePath}";`
+    });
+
+    return config
+      .use(addLoader)
+      .use(setSassConfig);
+  };
+
+  const config = Config({entry: 'app.js'}).plugin(new ModuleXPlugin({ themePath: '~app/theme.scss'}));
+
+  t.deepEqual({
+    entry: 'app.js',
+    module: {
+      loaders: {
+        moduleX: {
+          test: /\.scss$/,
+          includes: '/path/to/module-x',
+          loaders: ['sass?config=moduleXSass']
+        }
+      }
+    },
+    moduleXSass: {
+      data: '@import "~app/theme.scss";'
+    }
+  }, config.toJs(), "Should have used a plugin with a prototype");
+});
+
+test('plugin as class', t => {
+  t.plan(1);
+  class ModuleXPlugin {
+    constructor(options={}) {
+      this.options = options;
+    }
+
+    apply(config) {
+      return config.use(this.setSassConfig());
+    }
+
+    setSassConfig() {
+      const { options } = this;
+      return c => c.set('moduleXSass', {
+        data: `@import "${options.themePath}";`
+      });
+    }
+  }
+
+  const config = Config({entry:'app.js'}).plugin(new ModuleXPlugin({themePath: '~app/theme.scss'}));
+
+  t.deepEqual({
+    entry: 'app.js',
+    moduleXSass: {
+      data: '@import "~app/theme.scss";'
+    }
+  }, config.toJs(), 'Should have used a class as plugin');
+});
+
+test('plugin as function', t => {
+  t.plan(1);
+  function ModuleXPlugin(options) {
+    return config => {
+      return config
+        .use(c => c.set('moduleX', 'function'))
+        .use(c => c.set('moduleXSass', {
+          data: `@import "${options.themePath}";`
+        }))
+      ;
+    }
+  }
+
+  const config = Config({entry:'app.js'}).plugin(ModuleXPlugin({themePath: '~app/theme.scss'}));
+
+  t.deepEqual({
+    moduleX: 'function',
+    entry: 'app.js',
+    moduleXSass: {
+      data: '@import "~app/theme.scss";'
+    }
+  }, config.toJs(), 'Should have used a function as plugin');
+});

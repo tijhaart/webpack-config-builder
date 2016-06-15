@@ -22,7 +22,17 @@ export default function Config(state, reducers = defaultReducers) {
     compose: compose,
     getReducers: () => reducers,
     getState: () => state,
+    plugin: plugin
   };
+
+	/**
+ 	 * Plugin
+	 * @param {Function} pluginFn
+	 * @returns {Config}
+	 */
+	function plugin(pluginFn) {
+		return pluginFn.apply(this, [this]);
+	}
 
   /**
    * @param {Config} config
