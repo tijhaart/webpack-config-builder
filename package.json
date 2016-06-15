@@ -1,6 +1,6 @@
 {
   "name": "webpack-config-builder",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Create composable webpack configuration",
   "main": "lib/webpack-config-builder.js",
   "scripts": {
@@ -8,7 +8,11 @@
     "start": "DEBUG=\"webpack-config-builder*\" webpack",
     "test": "babel-tape-runner ./src/test.js"
   },
-  "keywords": ["webpack", "config", "immutable"],
+  "keywords": [
+    "webpack",
+    "config",
+    "immutable"
+  ],
   "author": "Raymond Tijhaar <contact@raymond.tijhaar.com>",
   "license": "MIT",
   "dependencies": {
