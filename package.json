@@ -1,6 +1,6 @@
 {
   "name": "webpack-config-builder",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Create composable webpack configuration",
   "main": "lib/webpack-config-builder.js",
   "scripts": {
