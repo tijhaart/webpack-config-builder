@@ -4,7 +4,7 @@ import fp from 'lodash/fp';
 
 const error = Debug('webpack-config-builder:error');
 const debug = Debug('webpack-config-builder:debug');
-
+const HOOKS_KEY = '_hooks';
 const defaultReducers = [c => c];
 
 /**
@@ -22,17 +22,19 @@ export default function Config(state, reducers = defaultReducers) {
     compose: compose,
     getReducers: () => reducers,
     getState: () => state,
-    plugin: plugin
+    plugin: plugin,
+    hook: useHook,
+    emit: useEmit,
   };
 
-	/**
- 	 * Plugin
-	 * @param {Function} pluginFn
-	 * @returns {Config}
-	 */
-	function plugin(pluginFn) {
-		return pluginFn.apply(this, [this]);
-	}
+  /**
+    * Plugin
+   * @param {Function} pluginFn
+   * @returns {Config}
+   */
+  function plugin(pluginFn) {
+    return pluginFn.apply(this, [this]);
+  }
 
   /**
    * @param {Config} config
@@ -50,7 +52,7 @@ export default function Config(state, reducers = defaultReducers) {
    */
   function toJs() {
     try {
-      return fp.flow(reducers)(state).toJS();
+      return fp.flow(reducers)(state).remove(HOOKS_KEY).toJS();
     } catch(err) {
       error(err);
 
@@ -100,4 +102,24 @@ export function exportForWebpack(c) {
 
 function objectToArray(obj) {
   return obj ? obj.toArray(): void(0);
+}
+
+function useHook(hook, reducer) {
+  return this.use(c => c.updateIn([HOOKS_KEY, hook], (reducers) => {
+    reducers = !reducers ? [] : reducers;
+    reducers.push(reducer);
+    return reducers;
+  }))
+}
+
+function useEmit(hook) {
+  return this.use(function(c) {
+    const reducers = c.getIn([HOOKS_KEY, hook], false);
+    
+    if (reducers) {
+      c = fp.flow(reducers)(c);
+    }
+    
+    return c;
+  })
 }

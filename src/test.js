@@ -2,6 +2,21 @@ import test from 'tape';
 import Config, { exportForWebpack } from './index.js';
 import fp from 'lodash/fp';
 
+test('hooks', (t) => {
+  t.plan(1);
+  let cfg = Config({
+      cache: false
+    })
+    .hook('before_toJs', (c) => c.set('cache', true))
+    .use(c => c.set('debug', true))
+    .hook('before_toJs', (c) => c.set('debug', false))
+    .emit('before_toJs')
+    .toJs()
+  ;
+  
+  t.deepEqual(cfg, { cache: true, debug: false }, 'hooked reducers should have been applied');
+});
+
 test('use', (t) => {
   t.plan(1);
   let cfg = Config({
